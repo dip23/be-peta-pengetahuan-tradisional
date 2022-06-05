@@ -4,9 +4,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert('JenisBudayas', [
       {
+        id: 1,
         nama_jenis: 'Pencatatan',
       },
       {
+        id: 2,
         nama_jenis: 'Penetapan'
       }
     ], {});

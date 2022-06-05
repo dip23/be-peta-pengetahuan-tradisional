@@ -20,14 +20,14 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
     registNum: DataTypes.INTEGER,
     tahun: DataTypes.INTEGER,
-    desc: DataTypes.STRING,
+    desc: DataTypes.TEXT,
     video: DataTypes.STRING,
     JenisBudayaId: DataTypes.INTEGER,
     ProvinsiId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Budaya',
-    timestamps: false
+    timestamps: false,
   });
   return Budaya;
 };

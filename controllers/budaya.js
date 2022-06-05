@@ -12,6 +12,9 @@ module.exports.getAll = async function (req, res) {
           model: db.Provinsi,
           attributes: ['nama_provinsi']
         }
+      ],
+      order: [
+        ['id', 'ASC']
       ]
     });
     return res.status(200).json({
@@ -23,13 +26,14 @@ module.exports.getAll = async function (req, res) {
       sucess: false,
       error: error,
       message: error.message
-    })
+    });
   }
 }
 
 module.exports.getListBudaya = async function (req, res) {
   try {
     const list = await db.Budaya.findAll({
+      attributes: ['id', 'nama_budaya'],
       where: { ProvinsiId: req.params.id }
     })
     if (!list) {
@@ -89,6 +93,143 @@ module.exports.getBudayaDetail = async function (req, res) {
       sucess: false,
       error: error,
       message: error.message
+    });
+  }
+}
+
+module.exports.createBudaya = async function (req, res) {
+  const {
+    nama_budaya,
+    image,
+    tahun,
+    desc,
+    video,
+    JenisBudayaId,
+    ProvinsiId
+  } = req.body;
+
+  try {
+    // check if name exist
+    const existBudaya = await db.Budaya.findOne({ where: { nama_budaya } })
+    if (existBudaya) {
+      return res.status(409).json({
+        success: false,
+        message: "Budaya sudah ada"
+      });
+    };
+
+    const updatedData = await db.Budaya.create({
+      nama_budaya,
+      image,
+      tahun,
+      desc,
+      video,
+      JenisBudayaId,
+      ProvinsiId
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: updatedData,
+      message: "Budaya added!"
+    });
+  } catch (error) {
+    return res.status(400).json({
+      sucess: false,
+      error: error,
+      message: error.message
+    });
+  }
+}
+
+module.exports.updateBudayaById = async function (req, res) {
+  try {
+    const { id } = req.params;
+    const {
+      image,
+      video,
+      nama_budaya,
+      ProvinsiId,
+      tahun,
+      desc
+    } = req.body;
+
+    const editedData = await db.Budaya.findByPk(id);
+
+    if (!editedData) {
+      return res.status(404).json({
+        sucess: false,
+        message: 'Budaya not found!'
+      });
+    }
+
+    editedData.update({
+      image,
+      video,
+      nama_budaya,
+      ProvinsiId,
+      tahun,
+      desc
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: editedData,
+      message: 'Edit Success'
     })
+  } catch (error) {
+    return res.status(400).json({
+      sucess: false,
+      error: error,
+      message: error.message
+    });
+  }
+}
+
+module.exports.deleteBudayaById = async function (req, res) {
+  try {
+    const { id } = req.params;
+
+    const deletedData = await db.Budaya.findByPk(id);
+
+    if (!deletedData) {
+      return res.status(404).json({
+        sucess: false,
+        message: 'Budaya not found!'
+      });
+    }
+
+    await deletedData.destroy();
+
+    return res.status(200).json({
+      success: true,
+      data: deletedData,
+      message: 'Sucess delete Budaya'
+    });
+  } catch (error) {
+    return res.status(400).json({
+      sucess: false,
+      error: error,
+      message: error.message
+    });
+  }
+}
+
+module.exports.initialId = async function (req, res) {
+  try {
+    const Budaya = await db.Budaya.findAll();
+    await db.sequelize.query(
+      `ALTER SEQUENCE "Budayas_id_seq" RESTART WITH ${Budaya.length + 1};`
+    );
+    return res.status(200).json({
+      success: true,
+      message: 'success'
+    })
+  } catch (error) {
+    return res.status(400).json({
+      sucess: false,
+      error: error,
+      message: error.message
+    });
   }
 }

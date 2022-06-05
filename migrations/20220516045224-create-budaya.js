@@ -18,6 +18,7 @@ module.exports = {
       },
       registNum: {
         allowNull: false,
+        autoIncrement: true,
         unique: true,
         type: Sequelize.INTEGER
       },
@@ -27,7 +28,7 @@ module.exports = {
       },
       desc: {
         allowNull: true,
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       video: {
         allowNull: true,

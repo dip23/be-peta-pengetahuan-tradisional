@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models/index.js");
 
 module.exports.getAll = async function (req, res) {
@@ -31,10 +32,13 @@ module.exports.getAll = async function (req, res) {
 }
 
 module.exports.getListBudaya = async function (req, res) {
+  const id = req.params.id;
   try {
     const list = await db.Budaya.findAll({
       attributes: ['id', 'nama_budaya'],
-      where: { ProvinsiId: req.params.id }
+      where: {
+        [Op.or]: [{ ProvinsiId: id }, { ProvinsiId: 35 }]
+      }
     })
     if (!list) {
       return res.status(404).json({

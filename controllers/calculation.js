@@ -27,8 +27,9 @@ module.exports.getCalculation = async function (req, res) {
     const totalProvinsi = dataProvinsi.length;
     const average = totalBudaya / totalProvinsi;
 
-    const low = average - (0.8 * stdev);
-    const high = average + (0.8 * stdev);
+    const n = req.params.multiplier;
+    const low = average - (n * stdev);
+    const high = average + (n * stdev);
 
     const dataCalculate = {
       total: totalBudaya,

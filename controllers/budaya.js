@@ -1,14 +1,13 @@
 const { Op } = require("sequelize");
+const getCursorData = require("../helpers/getCursorData.js");
+const parseSequelizeOptions = require("../helpers/parseSequelizeOptions.js");
 const db = require("../models/index.js");
 
 module.exports.getAll = async function (req, res) {
   try {
     const allData = await db.Budaya.findAll({
+      attributes: ['id', 'nama_budaya'],
       include: [
-        {
-          model: db.JenisBudaya,
-          attributes: ['nama_jenis'],
-        },
         {
           model: db.Provinsi,
           attributes: ['nama_provinsi']
@@ -21,6 +20,40 @@ module.exports.getAll = async function (req, res) {
     return res.status(200).json({
       sucess: true,
       data: allData
+    });
+  } catch (error) {
+    return res.status(400).json({
+      sucess: false,
+      error: error,
+      message: error.message
+    });
+  }
+}
+
+module.exports.getBudayaAll = async function (req, res) {
+  try {
+    const options = parseSequelizeOptions(req.query);
+    options.include = [
+      {
+        model: db.JenisBudaya,
+        attributes: ['nama_jenis'],
+      },
+      {
+        model: db.Provinsi,
+        attributes: ['nama_provinsi']
+      }
+    ];
+    options.order = [
+      ['id', 'ASC']
+    ];
+    const budaya = await db.Budaya.findAll(options);
+
+    const cursor = await getCursorData(db.Budaya, req.query);
+
+    return res.status(200).json({
+      sucess: true,
+      data: budaya,
+      cursor
     });
   } catch (error) {
     return res.status(400).json({

@@ -5,6 +5,7 @@ const auth = require('../../middleware/auth');
 
 budayaRouter.get('/value', budayaController.initialId);
 budayaRouter.get('/', budayaController.getAll);
+budayaRouter.get('/all', auth.checkLogin, budayaController.getBudayaAll);
 budayaRouter.post('/', auth.checkLogin, budayaController.createBudaya);
 budayaRouter.get('/:id', budayaController.getBudayaDetail);
 budayaRouter.put('/:id', auth.checkLogin, budayaController.updateBudayaById);

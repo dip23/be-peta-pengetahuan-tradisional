@@ -12,10 +12,10 @@ const app = express();
 const allowedOrigin = [
   "http://localhost:3000/",
   "http://localhost:3000",
+  "https://pengetahuan-tradisional.vercel.app",
   "https://pengetahuan-tradisional.vercel.app/",
   "https://pengetahuan-tradisional-git-master-dip23.vercel.app/",
   "https://pengetahuan-tradisional-dip23.vercel.app/"
-
 ];
 
 const corsOptions = {

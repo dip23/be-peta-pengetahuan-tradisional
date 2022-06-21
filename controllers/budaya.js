@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const getCursorData = require("../helpers/getCursorData.js");
 const parseSequelizeOptions = require("../helpers/parseSequelizeOptions.js");
 const db = require("../models/index.js");
+const { deleteCloudPicture } = require("../services/cloudinary");
 
 module.exports.getAll = async function (req, res) {
   try {
@@ -135,15 +136,24 @@ module.exports.getBudayaDetail = async function (req, res) {
 }
 
 module.exports.createBudaya = async function (req, res) {
+  console.log('hit');
   const {
     nama_budaya,
-    image,
     tahun,
     desc,
-    video,
     JenisBudayaId,
     ProvinsiId
   } = req.body;
+
+  const updateData = {
+    nama_budaya,
+    tahun,
+    desc,
+    JenisBudayaId,
+    ProvinsiId
+  };
+
+  if(req.file) updateData.image = req.file.path
 
   try {
     // check if name exist
@@ -155,15 +165,7 @@ module.exports.createBudaya = async function (req, res) {
       });
     };
 
-    const updatedData = await db.Budaya.create({
-      nama_budaya,
-      image,
-      tahun,
-      desc,
-      video,
-      JenisBudayaId,
-      ProvinsiId
-    });
+    const updatedData = await db.Budaya.create(updateData);
 
     return res.status(200).json({
       success: true,
@@ -183,13 +185,20 @@ module.exports.updateBudayaById = async function (req, res) {
   try {
     const { id } = req.params;
     const {
-      image,
-      video,
       nama_budaya,
       ProvinsiId,
       tahun,
       desc
     } = req.body;
+
+    const editData = {
+      nama_budaya,
+      ProvinsiId,
+      tahun,
+      desc
+    };
+
+    if(req.file) editData.image = req.file.path;
 
     const editedData = await db.Budaya.findByPk(id);
 
@@ -200,14 +209,7 @@ module.exports.updateBudayaById = async function (req, res) {
       });
     }
 
-    editedData.update({
-      image,
-      video,
-      nama_budaya,
-      ProvinsiId,
-      tahun,
-      desc
-    });
+    editedData.update(editData);
 
     return res.status(200).json({
       success: true,
@@ -235,6 +237,8 @@ module.exports.deleteBudayaById = async function (req, res) {
         message: 'Budaya not found!'
       });
     }
+
+    if(deletedData.image) deleteCloudPicture(deletedData.image);
 
     await deletedData.destroy();
 

@@ -15,7 +15,7 @@ module.exports.login = async function (req, res) {
           { expiresIn: '1h' }
         );
         res.cookie('jwt', token, {
-          maxAge: 60 * 60 * 1000, httpOnly: false, sameSite: 'none',
+          maxAge: 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'none',
         });
         return res.status(200).json({
           success: true,

@@ -45,7 +45,7 @@ module.exports.getBudayaAll = async function (req, res) {
       }
     ];
     options.order = [
-      ['id', 'DSC']
+      ['id', 'DESC']
     ];
     const budaya = await db.Budaya.findAll(options);
 

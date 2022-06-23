@@ -12,10 +12,13 @@ module.exports.login = async function (req, res) {
         const token = await jwt.sign(
           { id: admin.id, name: admin.nama },
           process.env.SECRET_TOKEN,
-          { expiresIn: '1h' }
+          { expiresIn: "1h" }
         );
-        res.cookie('jwt', token, {
-          maxAge: 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'none',
+        res.cookie("jwt", token, {
+          maxAge: 1 * 60 * 1000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
         });
         return res.status(200).json({
           success: true,
@@ -25,27 +28,27 @@ module.exports.login = async function (req, res) {
             email: admin.email,
             nama: admin.nama,
             username: admin.username,
-            token
-          }
+            token,
+          },
         });
       }
       return res.status(401).json({
         success: false,
-        message: "Email and Password didn't match"
+        message: "Email and Password didn't match",
       });
     }
     return res.status(401).json({
       success: false,
-      message: "Email not registered"
-    })
+      message: "Email not registered",
+    });
   } catch (error) {
     return res.status(400).json({
       sucess: false,
       error: error,
-      message: error.message
+      message: error.message,
     });
   }
-}
+};
 
 module.exports.comparePass = async function (req, res) {
   try {
@@ -53,12 +56,12 @@ module.exports.comparePass = async function (req, res) {
     const encryptedPassword = await bcrypt.hash(req.body.password, salt);
     return res.status(200).json({
       success: true,
-      data: encryptedPassword
-    })
+      data: encryptedPassword,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 module.exports.logout = (req, res) => {
   res.cookie("jwt", "", { maxAge: 1 });

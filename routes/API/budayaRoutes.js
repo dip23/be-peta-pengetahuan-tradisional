@@ -5,7 +5,7 @@ const budayaController = require('../../controllers/budaya');
 const auth = require('../../middleware/auth');
 const { getStorage } = require("../../services/cloudinary");
 
-const maxSize = 5*1024*1024; //5 MB
+const maxSize = 2*1024*1024; //2 MB
 
 const storage = getStorage('budaya');
 const upload = multer({ 

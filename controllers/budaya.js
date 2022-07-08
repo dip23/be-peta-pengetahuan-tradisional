@@ -49,7 +49,9 @@ module.exports.getBudayaAll = async function (req, res) {
     ];
     if(req.query.name){
       options.where = {
-        nama_budaya: req.query.name
+        nama_budaya: {
+          [Op.like]: `%${req.query.name}%`
+        }
       };
     };
     const budaya = await db.Budaya.findAll(options);

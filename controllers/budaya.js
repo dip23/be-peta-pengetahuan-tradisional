@@ -47,6 +47,11 @@ module.exports.getBudayaAll = async function (req, res) {
     options.order = [
       ['id', 'DESC']
     ];
+    if(req.query.name){
+      options.where = {
+        nama_budaya: req.query.name
+      };
+    };
     const budaya = await db.Budaya.findAll(options);
 
     const cursor = await getCursorData(db.Budaya, req.query);

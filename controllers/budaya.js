@@ -72,7 +72,10 @@ module.exports.getListBudaya = async function (req, res) {
       attributes: ['id', 'nama_budaya'],
       where: {
         [Op.or]: [{ ProvinsiId: id }, { ProvinsiId: 35 }]
-      }
+      },
+      order: [
+        ['nama_budaya', 'ASC']
+      ]
     })
     if (!list) {
       return res.status(404).json({
